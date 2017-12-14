@@ -5,7 +5,7 @@ agent any
     {
     steps
     {
-    sh'git clone https://github.com/aishwaryashinde/linear-regression.git'
+    sh'git clone https://github.com/aishwaryashinde00/linear-regression.git'
   }
      }
             stage('Build')
