@@ -1,0 +1,31 @@
+pipeline{
+agent any 
+    stages {
+    stage('Cloning')
+    {
+    steps
+    {
+    sh'git clone https://github.com/aishwaryashinde/linear-regression.git'
+  }
+     }
+            stage('Build')
+    {
+        steps {
+    sh'WEB_IMAGE_NAME="aishwaryashinde/linear-regression:kube${BUILD_NUMBER}"'
+ sh'docker build -t aishwaryashinde/linear-regression:${BUILD_NUMBER} .'
+sh 'docker login -u aishwaryashinde -p ${DOCKER_HUB}'
+sh 'docker push aishwaryashinde/linear-regression:${BUILD_NUMBER} '     
+}  
+   
+   }
+   
+    stage('Deployment')
+    {
+        steps {
+           sh 'WEB_IMAGE_NAME="aishwaryashinde/linear-regression:kube${BUILD_NUMBER}"'
+           sh ' create -f ${WORKSPACE}/linear-regression.yml || true'
+sh 'kubectl set image deployment/go-web go-web=aishwaryashinde/linear-regression:${BUILD_NUMBER} --kubeconfig /var/lib/jenkins/.kube/config'
+             }
+    }
+}
+}
